@@ -31,6 +31,21 @@
       var baseURL = window.location.protocol + '//' + window.location.host;
 
 
+      $scope.checkout = function(product) {
+			if(product == 'Easy Polo Black Edition')
+			 {$scope.price = 56;
+			 $scope.productName=product;}
+
+			 	if(product == 'Polo Blue')
+			 {$scope.price = 250;
+			 $scope.productName=product;}
+
+			 	if(product == 'Birkin Handbag')
+			 {$scope.price = 9500;
+			 $scope.productName=product;}
+      }
+
+
       $scope.insertLoginEvent = function() {
 
 
@@ -38,7 +53,7 @@
               url: baseURL+"/events/txn-event/CUST898920",
               method: "POST",
               headers: new Headers({ 'Content-Type': 'application/json' }),
-              data: "{\"eventType\":\"merchandise\",\"amount\":9500,\"transactionId\": "+ Math.floor(Math.random() * 3)+"}"
+              data: "{\"eventType\":\"merchandise\",\"amount\":"+$scope.price+",\"transactionId\": "+ Math.floor(Math.random(1,100) * 3)+"}"
 
           })
           .then(function(response) {
@@ -193,50 +208,126 @@
 				<h2>Review & Payment</h2>
 			</div>
 
-			<div class="table-responsive cart_info">
+
+			<div class="col-sm-4">
+				<div class="product-image-wrapper">
+					<div class="single-products">
+						<div class="productinfo text-center">
+							<img src="images/home/product4.jpg" alt="" />
+							<h2>$56</h2>
+							<p>Easy Polo Black Edition</p>
+
+						</div>
+						<div class="product-overlay">
+							<div class="overlay-content">
+								<h2>$56</h2>
+								<p>Easy Polo Black Edition</p>
+								<a href="#" class="btn btn-default add-to-cart" ng-click="checkout('Easy Polo Black Edition')"><i class="fa fa-shopping-cart"></i>Checkout</a>
+							</div>
+						</div>
+						<img src="images/home/new.png" class="new" alt="" />
+					</div>
+					<div class="choose">
+						<ul class="nav nav-pills nav-justified">
+							<li><a href="#"><i class="fa fa-plus-square"></i>Add to wishlist</a></li>
+							<li><a href="#"><i class="fa fa-plus-square"></i>Add to compare</a></li>
+						</ul>
+					</div>
+				</div>
+
+
+			</div>
+			<div class="col-sm-4">
+				<div class="product-image-wrapper">
+					<div class="single-products">
+						<div class="productinfo text-center">
+							<img src="images/cart/bag.png" alt="" />
+							<h2>$9500</h2>
+							<p>Birkin Handbag</p>
+
+						</div>
+						<div class="product-overlay">
+							<div class="overlay-content">
+								<h2>$9500</h2>
+								<p>Birkin Handbag</p>
+								<a href="#" class="btn btn-default add-to-cart" ng-click="checkout('Birkin Handbag')"><i class="fa fa-shopping-cart"></i>Checkout</a>
+							</div>
+						</div>
+						<img src="images/home/new.png" class="new" alt="" />
+					</div>
+					<div class="choose">
+						<ul class="nav nav-pills nav-justified">
+							<li><a href="#"><i class="fa fa-plus-square"></i>Add to wishlist</a></li>
+							<li><a href="#"><i class="fa fa-plus-square"></i>Add to compare</a></li>
+						</ul>
+					</div>
+				</div>
+
+
+			</div>
+
+			<div class="col-sm-4">
+				<div class="product-image-wrapper">
+					<div class="single-products">
+						<div class="productinfo text-center">
+							<img src="images/home/product5.jpg" alt="" />
+							<h2>$250</h2>
+							<p>Polo Blue</p>
+
+						</div>
+						<div class="product-overlay">
+							<div class="overlay-content">
+								<h2>$250</h2>
+								<p>Polo Blue</p>
+								<a href="#" class="btn btn-default add-to-cart" ng-click="checkout('Polo Blue')"><i class="fa fa-shopping-cart"></i>Checkout</a>
+							</div>
+						</div>
+						<img src="images/home/new.png" class="new" alt="" />
+					</div>
+					<div class="choose">
+						<ul class="nav nav-pills nav-justified">
+							<li><a href="#"><i class="fa fa-plus-square"></i>Add to wishlist</a></li>
+							<li><a href="#"><i class="fa fa-plus-square"></i>Add to compare</a></li>
+						</ul>
+					</div>
+				</div>
+
+
+			</div>
+			<div class="table-responsive cart_info" ng-show="productName != null">
 				<table class="table table-condensed">
 					<thead>
-						<tr class="cart_menu">
-							<td class="image">Item</td>
-							<td class="description"></td>
-							<td class="price">Price</td>
-							<td class="quantity">Quantity</td>
-							<td class="total">Total</td>
-							<td></td>
-						</tr>
+					<tr class="cart_menu">
+						<td class="image">Item</td>
+
+						<td class="price">Price</td>
+
+						<td></td>
+					</tr>
 					</thead>
 					<tbody>
-						<tr>
-							<td class="cart_product">
-								<a href=""><img src="images/cart/bag.png" alt=""></a>
-							</td>
-							<td class="cart_description">
-								<h4><a href="">Birkin Handbag</a></h4>
-								<p>Web ID: 1089772</p>
-							</td>
-							<td class="cart_price">
-								<p>$9,500</p>
-							</td>
-							<td class="cart_quantity">
-								<div class="cart_quantity_button">
-									<a class="cart_quantity_up" href=""> + </a>
-									<input class="cart_quantity_input" type="text" name="quantity" value="1" autocomplete="off" size="2">
-									<a class="cart_quantity_down" href=""> - </a>
-								</div>
-							</td>
-							<td class="cart_total">
-								<p class="cart_total_price">$9,500</p>
-							</td>
-							<td class="cart_delete">
-								<a class="cart_quantity_delete" href=""><i class="fa fa-times"></i></a>
-							</td>
-						</tr>
+					<tr>
+
+						<td class="cart_description">
+							<h4><a href="">{{productName}}</a></h4>
+							<p>Web ID: 1089772</p>
+						</td>
+						<td class="cart_price">
+							<p>${{price}}</p>
+						</td>
+
+						<td class="cart_delete">
+							<a class="cart_quantity_delete" href=""><i class="fa fa-times"></i></a>
+						</td>
+					</tr>
 
 
 
 					</tbody>
 				</table>
 			</div>
+
+
 			<div class="payment-options">
 					<span>
 						<select class="dropdown"  >
