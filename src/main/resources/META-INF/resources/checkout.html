@@ -47,13 +47,14 @@
 
 
       $scope.insertLoginEvent = function() {
-
+		var x = 6; // can be any number
+     var rand = Math.floor(Math.random()*x) + 1;
 
       $http({
               url: baseURL+"/events/txn-event/CUST898920",
               method: "POST",
               headers: new Headers({ 'Content-Type': 'application/json' }),
-              data: "{\"eventType\":\"merchandise\",\"amount\":"+$scope.price+",\"transactionId\": "+ Date.now()+"}"
+              data: "{\"eventType\":\"merchandise\",\"amount\":"+$scope.price+",\"transactionId\": "+ rand+"}"
 
           })
           .then(function(response) {
