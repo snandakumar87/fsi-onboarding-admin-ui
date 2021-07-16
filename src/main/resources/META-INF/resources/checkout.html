@@ -54,7 +54,7 @@
               url: baseURL+"/events/txn-event/CUST898920",
               method: "POST",
               headers: new Headers({ 'Content-Type': 'application/json' }),
-              data: "{\"eventType\":\"merchandise\",\"amount\":"+$scope.price+",\"transactionId\": "+ Math.round(Date.now()/100000000) +"}"
+              data: "{\"eventType\":\"merchandise\",\"amount\":"+$scope.price+",\"transactionId\": "+ Math.round(Date.now() * rand /1000000000) +"}"
 
           })
           .then(function(response) {
