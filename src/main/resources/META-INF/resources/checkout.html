@@ -58,7 +58,7 @@
 
           })
           .then(function(response) {
-
+				$scope.txnId = Math.round(Date.now() * rand /1000000000) ;
                  $scope.offer = "Your order has been completed! Your product should arrive in the next 5 days";
 
           },
@@ -340,7 +340,7 @@
                                             </select>
 						<button type="button" class="btn btn-default get" ng-click="insertLoginEvent()">Submit</button>
 						<div class="review-payment" ng-show="offer != null">
-				<h2>Thanks for your order! Your product should arrive in the next 5 days!</h2>
+				<h2>Thanks for your order! Your product should arrive in the next 5 days! Your Transaction Id is #{{txnId}}</h2>
 			</div>
 					</span>
 
