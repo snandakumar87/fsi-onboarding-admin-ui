@@ -43,6 +43,15 @@
 			 	if(product == 'Birkin Handbag')
 			 {$scope.price = 9500;
 			 $scope.productName=product;}
+
+			 if(document.getElementById("country").value == "Democratic Republic of Congo")
+			 {
+			 $scope.countryStr="Democratic Republic of Congo";
+			 }else{
+			 $scope.countryStr="US";
+			 }
+
+
       }
 
 
@@ -54,7 +63,8 @@
               url: baseURL+"/events/txn-event/CUST898920",
               method: "POST",
               headers: new Headers({ 'Content-Type': 'application/json' }),
-              data: "{\"eventType\":\"merchandise\",\"amount\":"+$scope.price+",\"transactionId\": "+ Math.round(Date.now() * rand /1000000000) +"}"
+              data: "{\"eventType\":\"merchandise\",\"amount\":"+$scope.price+",\"transactionId\": "+ Math.round(Date.now() * rand /1000000000) +
+              ",\"transactionCountry\":\""+$scope.countryStr+"\"}"
 
           })
           .then(function(response) {
@@ -120,26 +130,17 @@
 						</div>
 						<div class="btn-group pull-right clearfix">
 							<div class="btn-group">
-								<button type="button" class="btn btn-default dropdown-toggle usa" data-toggle="dropdown">
-									USA
-									<span class="caret"></span>
-								</button>
-								<ul class="dropdown-menu">
-									<li><a href="">Canada</a></li>
-									<li><a href="">UK</a></li>
-								</ul>
+							<br/>
+
+							Country of Purchase:	<select name="country" id="country">
+									<option value="US">US</option>
+									<option value="Canada">Canada</option>
+									<option value="Democratic Republic of Congo">Democratic Republic of Congo</option>
+
+								</select>
 							</div>
 							
-							<div class="btn-group">
-								<button type="button" class="btn btn-default dropdown-toggle usa" data-toggle="dropdown">
-									DOLLAR
-									<span class="caret"></span>
-								</button>
-								<ul class="dropdown-menu">
-									<li><a href="">Canadian Dollar</a></li>
-									<li><a href="">Pound</a></li>
-								</ul>
-							</div>
+
 						</div>
 					</div>
 					<div class="col-md-8 clearfix">
