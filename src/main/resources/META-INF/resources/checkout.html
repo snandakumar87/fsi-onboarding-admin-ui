@@ -67,18 +67,18 @@ $scope.reset = function() {
 
       $scope.insertLoginEvent = function() {
 		var x = 6; // can be any number
-     var rand = Math.floor(Math.random()*x) + 1;
+     var rand = Date.now();
 
       $http({
               url: baseURL+"/events/txn-event/CUST898920",
               method: "POST",
               headers: new Headers({ 'Content-Type': 'application/json' }),
-              data: "{\"eventType\":\"merchandise\",\"amount\":"+$scope.price+",\"transactionId\": "+ Date.now() +
+              data: "{\"eventType\":\"merchandise\",\"amount\":"+$scope.price+",\"transactionId\": "+ rand +
               ",\"transactionCountry\":\""+$scope.countryStr+"\"}"
 
           })
           .then(function(response) {
-				$scope.txnId = Math.round(Date.now() * rand /1000000000) ;
+				$scope.txnId = rand ;
                  $scope.offer = "Your order has been completed! Your product should arrive in the next 5 days";
 
           },
