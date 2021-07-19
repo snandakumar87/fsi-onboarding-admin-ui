@@ -54,6 +54,16 @@
 
       }
 
+$scope.reset = function() {
+
+		$scope.countryStr = "US";
+		$scope.price = null;
+		$scope.product = null;
+		$scope.txnId = null;
+		$scope.offer=null;
+      }
+
+
 
       $scope.insertLoginEvent = function() {
 		var x = 6; // can be any number
@@ -340,6 +350,7 @@
 
                                             </select>
 						<button type="button" class="btn btn-default get" ng-click="insertLoginEvent()">Submit</button>
+						<button type="button" class="btn btn-default get" ng-click="reset()">Reset</button>
 						<div class="review-payment" ng-show="offer != null">
 				<h2>Thanks for your order! Your product should arrive in the next 5 days! Your Transaction Id is #{{txnId}}</h2>
 			</div>
