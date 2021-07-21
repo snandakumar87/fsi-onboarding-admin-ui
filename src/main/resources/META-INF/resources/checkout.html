@@ -69,12 +69,14 @@ $scope.reset = function() {
 		var x = 6; // can be any number
      var rand = Date.now();
 
+     $scope.paymentMode = document.getElementById("paymentMode").value;
+
       $http({
               url: baseURL+"/events/txn-event/CUST898920",
               method: "POST",
               headers: new Headers({ 'Content-Type': 'application/json' }),
               data: "{\"eventType\":\"merchandise\",\"amount\":"+$scope.price+",\"transactionId\": "+ rand +
-              ",\"transactionCountry\":\""+$scope.countryStr+"\"}"
+              ",\"transactionCountry\":\""+$scope.countryStr+"\",\"paymentMode\":\""+$scope.paymentMode+"\"}"
 
           })
           .then(function(response) {
@@ -345,9 +347,9 @@ $scope.reset = function() {
 
 			<div class="payment-options">
 					<span>
-						<select class="dropdown"  >
-
-                                                <option value="account">Visa ending in 4567</option>
+						<select class="dropdown" id="payment" >
+												 <option value="savings">Savings ending in 0023</option>
+                                                <option value="creditcard">Visa ending in 4567</option>
                                                 <option value="desk">Add new card</option>
 
 
