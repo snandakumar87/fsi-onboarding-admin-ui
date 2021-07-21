@@ -69,7 +69,7 @@ $scope.reset = function() {
 		var x = 6; // can be any number
      var rand = Date.now();
 
-     $scope.paymentMode = document.getElementById("paymentMode").value;
+     $scope.paymentMode = document.getElementById("payment").value;
 
       $http({
               url: baseURL+"/events/txn-event/CUST898920",
