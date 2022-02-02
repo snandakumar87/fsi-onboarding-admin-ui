@@ -14,6 +14,8 @@
     <title>PatternFly Primary-detail expanded CodeSandbox Example</title>
     <script src="http://ajax.googleapis.com/ajax/libs/angularjs/1.4.8/angular.min.js"></script>
 
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.bundle.min.js" crossorigin="anonymous"></script>
+
     <script>
 
 
@@ -22,29 +24,66 @@
       app.controller('FormController', function($scope,$http) {
 
       var baseURL = window.location.protocol + '//' + window.location.host;
+      var queryString = window.location.search;
+var urlParams = new URLSearchParams(queryString);
+var taskId = urlParams.get('taskId');
+var caseId = urlParams.get('caseId');
 
 
-
-
-$http({
-        url: baseURL+"/onboarding/admin/cases",
+        $http({
+        url: baseURL+"/onboarding/docReq/"+caseId,
         method: "GET"
 
     })
     .then(function(response) {
 
-           $scope.cases =response.data;
+           $scope.docReq =response.data;
+
 
 
 
     });
+       $scope.files = [];
+
+     $scope.getFileDetails = function (e) {
 
 
-$scope.caseDetails = function(caseId) {
+            $scope.$apply(function () {
 
-      window.open("/casedetails.html?caseId="+caseId, '_blank');
-    }
+                // STORE THE FILE OBJECT IN AN ARRAY.
+                for (var i = 0; i < e.files.length; i++) {
+                    $scope.files.push(e.files[i])
+                }
 
+            });
+        };
+
+$scope.uploadFiles = function () {
+
+        $scope.test = "assigned";
+
+            //FILL FormData WITH FILE DETAILS.
+            var data = new FormData();
+
+            for (var i in $scope.files) {
+                data.append("uploadedFile", $scope.files[i]);
+            }
+
+
+
+
+            $http({
+            url: baseURL+'/onboarding/customer-case/documents/'+caseId+'/task/'+taskId,
+            method: "POST",
+            data: data,
+             headers: {'Content-Type': undefined},
+            })
+            .then(function(response) {
+              $scope.responseMsg = "Files Uploaded Succesfully, we will be with you shortly";
+              $scope.test="unassigned";
+            });
+
+}
 
          });
 
@@ -156,7 +195,7 @@ $scope.caseDetails = function(caseId) {
                   aria-expanded="false"
                   type="button"
                 >
-                  <span class="pf-c-dropdown__toggle-text">Admin</span>
+                  <span class="pf-c-dropdown__toggle-text">John Smith</span>
                   <span class="pf-c-dropdown__toggle-icon">
                     <i class="fas fa-caret-down" aria-hidden="true"></i>
                   </span>
@@ -219,18 +258,16 @@ $scope.caseDetails = function(caseId) {
                   class="pf-c-nav__link pf-m-current"
                   aria-current="page"
                   >Commercial Onboarding</a
-
                 >
               </li>
             </ul>
-
           </nav>
         </div>
       </div>
       <main class="pf-c-page__main" tabindex="-1">
         <section class="pf-c-page__main-section pf-m-light">
           <div class="pf-c-content">
-            <h2>Case Status</h2>
+            <h2>Documentation Requirements</h2>
           </div>
         </section>
 
@@ -242,31 +279,69 @@ $scope.caseDetails = function(caseId) {
               <!-- Content -->
               <div class="pf-c-drawer__content">
                 <div class="pf-c-drawer__body">
-                  <table  class="pf-c-table pf-m-grid-md" id="table1" ng-show="cases != null">
-                    <thead>
-                    <tr role="row">
-                      <th role="columnheader">Case Id</th>
-                      <th role="columnheader">Case Status</th>
-                      <th role="columnheader">Case Started At</th>
-                      <th role="columnheader">SLA Compliance</th>
-                      <th role="columnheader">Details</th>
+                  <ul
+                    class="pf-c-data-list"
+                    role="list"
+                    aria-label="Simple data list example"
+                    id="primary-detail-expanded-example-data-list"
+                  >
+                    <li
+                      class="pf-c-data-list__item"
+                      aria-labelledby="primary-detail-expanded-example-data-list-item-1"
+                    >
+                      <div class="pf-c-data-list__item-row">
+                        <div class="pf-c-data-list__item-content">
+                          <div class="pf-c-data-list__cell pf-m-align-left">
+                            <div
+                              class="pf-l-flex pf-m-column pf-m-space-items-md"
+                            >
+                              <div
+                                class="pf-l-flex pf-m-column pf-m-space-items-none"
+                              >
+                                <form enctype="multipart/form-data">
 
-                    </tr>
-                    </thead>
+                                <table  class="pf-c-table pf-m-grid-md" id="table1" ng-show="docReq != null">
+                                  <thead>
+                                  <tr role="row">
+                                    <th role="columnheader">Document Name</th>
+                                    <th role="columnheader">Upload</th>
 
-                    <tbody ng-repeat="x in cases" role="rowgroup">
 
-                    <tr role="row"><td role="cell">{{x.caseId}}</td><td>{{x.caseStatus}}</td><td>{{x.caseStartedAt}}</td><td ng-show="x.slaCompliance == 'Violated'" style="background:#E02401">{{x.slaCompliance}}</td><td ng-show="x.slaCompliance != 'Violated'"  style="background:#2CDA9D">{{x.slaCompliance}}</td><td><button  class="pf-c-button pf-m-primary" ng-click="caseDetails(x.processId)">Details</button></td></tr>
+                                  </tr>
+                                  </thead>
 
-                    </tr>
-                    </tbody>
+                                  <tbody ng-repeat="x in docReq" role="rowgroup">
 
-                  </table>
+                                  <tr role="row"><td role="cell">{{x.docName}}</td><td><div class="file-loading">
+                                    <input id="file-1" type="file" showClose="false" data-show-upload="false" multiple class="file" data-theme="fas" onchange="angular.element(this).scope().getFileDetails(this)" >
 
+                                  </div></td></tr>
+
+                                  </tr>
+                                  </tbody>
+
+                                </table>
+                                  <br/>
+
+                                  <button id="submitButton"  type="button"  class="pf-c-button pf-m-primary" ng-click="uploadFiles();" ng-show="responseMsg == null">Submit</button>
+                                </form>
+
+                                <br/>
+                               <p> {{responseMsg}}</p>
+                              </div>
+
+                            </div>
+                          </div>
+                          <div
+                            class="pf-c-data-list__cell pf-m-align-right pf-m-no-fill"
+                          ></div>
+                        </div>
+                      </div>
+                    </li>
+                  </ul>
                 </div>
               </div>
 
-              <!-- Panel -->
 
             </div>
           </div>

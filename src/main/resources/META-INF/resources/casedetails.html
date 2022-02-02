@@ -1,0 +1,837 @@
+<!DOCTYPE html>
+<html lang="en" class="pf-m-redhat-font">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="stylesheet" href="fonts.css" />
+    <!-- Include latest PatternFly CSS via CDN -->
+    <link
+      rel="stylesheet"
+      href="https://unpkg.com/@patternfly/patternfly/patternfly.css"
+      crossorigin="anonymous"
+    />
+    <link rel="stylesheet" href="style.css" />
+    <title>PatternFly Primary-detail expanded CodeSandbox Example</title>
+    <script src="http://ajax.googleapis.com/ajax/libs/angularjs/1.4.8/angular.min.js"></script>
+
+
+
+    <script>
+function resizeIframe(obj) {
+    obj.style.height = obj.contentWindow.document.documentElement.scrollHeight + 'px';
+  }
+
+
+      var app = angular.module('myApp', []);
+      app.controller('FormController', function($scope,$http,$sce) {
+
+      var baseURL = window.location.protocol + '//' + window.location.host;
+      var queryString = window.location.search;
+var urlParams = new URLSearchParams(queryString);
+var caseId = urlParams.get('caseId');
+
+
+
+    $http({
+        url: baseURL+"/onboarding/admin/svg/"+caseId,
+        method: "GET"
+
+    })
+    .then(function(response) {
+
+           $scope.svg =response.data.svg;
+
+
+            document.getElementById("svgDiv").innerHTML=$scope.svg;
+            $scope.tab = "caseStatus"
+
+
+    });
+
+    $scope.caseDataCall = function() {
+
+
+      $http({
+        url: baseURL+"/onboarding/admin/caseFile/"+caseId,
+        method: "GET"
+
+    })
+    .then(function(response) {
+
+           $scope.caseDataValue =response.data;
+            $scope.tab = "caseDataVal"
+
+
+    });
+    }
+
+     $scope.caseStatusCall = function() {
+
+
+          location.reload();
+
+            $scope.tab = "caseStatus";
+
+
+
+    }
+
+ $scope.decisionNodeCall = function() {
+
+
+      $http({
+        url: baseURL+"/onboarding/admin/decisionNodeData/"+caseId,
+        method: "GET"
+
+    })
+    .then(function(response) {
+
+           $scope.decisionNodeData =response.data;
+            $scope.tab = "decisionNode"
+
+
+    });
+    }
+
+    $scope.docs = function() {
+
+
+      $http({
+        url: baseURL+"/onboarding/admin/docs/"+caseId,
+        method: "GET"
+
+    })
+    .then(function(response) {
+
+           $scope.docsData =response.data;
+            $scope.tab = "docs"
+
+
+    });
+
+
+    }
+
+
+    $scope.comments = function() {
+
+
+      $http({
+        url: baseURL+"/onboarding/admin/casecomments/"+caseId,
+        method: "GET"
+
+    })
+    .then(function(response) {
+
+           $scope.commentData =response.data;
+
+            $scope.tab = "comments"
+
+
+    });
+
+
+    }
+
+    $scope.addComment = function() {
+
+
+      $http({
+        url: baseURL+"/onboarding/admin/comment/"+caseId,
+        method: "POST",
+        data: $scope.commentValue
+
+    })
+    .then(function(response) {
+
+           $scope.commentAddedConf ="Comment added succesfully";
+
+            $scope.tab = "comments";
+            $scope.commentValue="";
+
+            $scope.comments();
+
+
+
+    });
+
+
+    }
+
+    $scope.trigger = function() {
+
+      var urlString = baseURL+"/onboarding/admin/trigger/"+caseId+"/"+encodeURI($scope.steps);
+
+
+
+      $http({
+        url: urlString,
+        method: "POST"
+
+    })
+    .then(function(response) {
+
+           $scope.triggerMessage ="Case Closed Succesfully";
+
+            $scope.tab = "caseStatus";
+
+            location.reload();
+
+
+
+
+    });
+
+
+    }
+
+     $scope.approveTask = function(taskId, approve) {
+
+      var urlString = baseURL+"/onboarding/admin/approve/"+caseId+"/task/"+taskId+"/"+approve;
+
+
+
+      $http({
+        url: urlString,
+        method: "POST"
+
+    })
+    .then(function(response) {
+
+           $scope.taskCompleted ="Task Completed Succesfully";
+
+            $scope.tab = "tasks";
+
+           $scope.taskCall();
+
+
+
+
+    });
+
+
+    }
+
+    $scope.closeCase = function() {
+
+
+      $http({
+        url: baseURL+"/onboarding/admin/close/"+caseId,
+        method: "POST"
+
+    })
+    .then(function(response) {
+
+           $scope.closeCaseComment ="Case Closed Succesfully";
+
+            $scope.tab = "caseStatus";
+            document.getElementById("closeButton").disabled=true;
+             document.getElementById("dynamicButton").disabled=true;
+
+
+
+
+
+
+    });
+
+
+    }
+
+ $scope.taskCall = function() {
+
+
+      $http({
+        url: baseURL+"/onboarding/tasks/"+caseId,
+        method: "GET"
+
+    })
+    .then(function(response) {
+
+           $scope.taskData =response.data;
+            $scope.tab = "tasks"
+
+
+    });
+    }
+$scope.content={};
+$scope.getCaseFileDocs = function(docId) {
+
+
+$http.get('/onboarding/content/'+docId, { responseType: 'arraybuffer' }).success(function (response) {
+
+ var file = new Blob([response], {type: 'application/pdf'});
+ var fileURL = URL.createObjectURL(file);
+ $scope.content =  $sce.trustAsResourceUrl(fileURL);
+ $scope.fileContentBool = true;
+});
+
+    }
+
+
+         });
+
+
+
+ </script>
+
+
+
+  </head>
+
+
+  <body ng-app="myApp" ng-controller="FormController">
+    <div class="pf-c-page" id="primary-detail-expanded-example">
+      <a
+        class="pf-c-skip-to-content pf-c-button pf-m-primary"
+        href="#main-content-primary-detail-expanded-example"
+        >Skip to content</a
+      >
+      <header class="pf-c-page__header">
+        <div class="pf-c-page__header-brand">
+          <div class="pf-c-page__header-brand-toggle">
+            <button
+              class="pf-c-button pf-m-plain"
+              type="button"
+              id="primary-detail-expanded-example-nav-toggle"
+              aria-label="Global navigation"
+              aria-expanded="true"
+              aria-controls="primary-detail-expanded-example-primary-nav"
+            >
+              <i class="fas fa-bars" aria-hidden="true"></i>
+            </button>
+          </div>
+          <a href="#" class="pf-c-page__header-brand-link">
+            <img
+
+                    src="Acme Financial-logos_white.png" width="105px"
+                    alt="PatternFly logo"
+            />
+          </a>
+        </div>
+
+        <div class="pf-c-page__header-tools">
+          <div class="pf-c-page__header-tools-group">
+            <div
+              class="pf-c-page__header-tools-item pf-m-hidden pf-m-visible-on-lg"
+            >
+              <button
+                class="pf-c-button pf-m-plain"
+                type="button"
+                aria-label="Settings"
+              >
+                <i class="fas fa-cog" aria-hidden="true"></i>
+              </button>
+            </div>
+            <div
+              class="pf-c-page__header-tools-item pf-m-hidden pf-m-visible-on-lg"
+            >
+              <button
+                class="pf-c-button pf-m-plain"
+                type="button"
+                aria-label="Help"
+              >
+                <i class="pf-icon pf-icon-help" aria-hidden="true"></i>
+              </button>
+            </div>
+          </div>
+          <div class="pf-c-page__header-tools-group">
+            <div class="pf-c-page__header-tools-item pf-m-hidden-on-lg">
+              <div class="pf-c-dropdown">
+                <ul
+                  class="pf-c-dropdown__menu pf-m-align-right"
+                  aria-labelledby="primary-detail-expanded-example-dropdown-kebab-1-button"
+                  hidden
+                >
+                  <li></li>
+                  <li>
+                    <a
+                      class="pf-c-dropdown__menu-item pf-m-disabled"
+                      href="#"
+                      aria-disabled="true"
+                      tabindex="-1"
+                      >Disabled link</a
+                    >
+                  </li>
+                  <li>
+                    <button
+                      class="pf-c-dropdown__menu-item"
+                      type="button"
+                      disabled
+                    >
+                      Disabled action
+                    </button>
+                  </li>
+                  <li class="pf-c-divider" role="separator"></li>
+                  <li>
+                    <a class="pf-c-dropdown__menu-item" href="#"
+                      >Separated link</a
+                    >
+                  </li>
+                </ul>
+              </div>
+            </div>
+            <div
+              class="pf-c-page__header-tools-item pf-m-hidden pf-m-visible-on-md"
+            >
+              <div class="pf-c-dropdown">
+                <button
+                  class="pf-c-dropdown__toggle pf-m-plain"
+                  id="primary-detail-expanded-example-dropdown-kebab-2-button"
+                  aria-expanded="false"
+                  type="button"
+                >
+                  <span class="pf-c-dropdown__toggle-text">John Smith</span>
+                  <span class="pf-c-dropdown__toggle-icon">
+                    <i class="fas fa-caret-down" aria-hidden="true"></i>
+                  </span>
+                </button>
+                <ul
+                  class="pf-c-dropdown__menu"
+                  aria-labelledby="primary-detail-expanded-example-dropdown-kebab-2-button"
+                  hidden
+                >
+                  <li>
+                    <a class="pf-c-dropdown__menu-item" href="#">Link</a>
+                  </li>
+                  <li></li>
+                  <li>
+                    <a
+                      class="pf-c-dropdown__menu-item pf-m-disabled"
+                      href="#"
+                      aria-disabled="true"
+                      tabindex="-1"
+                      >Disabled link</a
+                    >
+                  </li>
+                  <li>
+                    <button
+                      class="pf-c-dropdown__menu-item"
+                      type="button"
+                      disabled
+                    >
+                      Disabled action
+                    </button>
+                  </li>
+                  <li class="pf-c-divider" role="separator"></li>
+                  <li>
+                    <a class="pf-c-dropdown__menu-item" href="#"
+                      >Separated link</a
+                    >
+                  </li>
+                </ul>
+              </div>
+            </div>
+          </div>
+          <img
+            class="pf-c-avatar"
+            src="https://www.patternfly.org/v4/assets/images/img_avatar.svg"
+            alt="Avatar image"
+          />
+        </div>
+      </header>
+      <div class="pf-c-page__sidebar">
+        <div class="pf-c-page__sidebar-body">
+          <nav
+            class="pf-c-nav"
+            id="primary-detail-expanded-example-primary-nav"
+            aria-label="Global"
+          >
+            <ul class="pf-c-nav__list">
+              <li class="pf-c-nav__item">
+                <a
+                  href="#"
+                  class="pf-c-nav__link pf-m-current"
+                  aria-current="page"
+                  >Commercial Onboarding</a
+                >
+              </li>
+            </ul>
+          </nav>
+        </div>
+      </div>
+      <main class="pf-c-page__main" tabindex="-1">
+        <section class="pf-c-page__main-section pf-m-light">
+          <div class="pf-c-content">
+            <h2>Case Details</h2>
+          </div>
+        </section>
+
+        <div class="pf-c-divider" role="separator"></div>
+        <section class="pf-c-page__main-section pf-m-no-padding">
+          <!-- Drawer -->
+          <div class="pf-c-drawer pf-m-expanded pf-m-inline-on-4xl">
+            <div class="pf-c-drawer__main">
+              <!-- Content -->
+              <div class="pf-c-drawer__content">
+                <div class="pf-c-drawer__body">
+                  <div class="pf-c-tabs" id="default-example">
+                    <button
+                            class="pf-c-tabs__scroll-button"
+                            disabled
+                            aria-hidden="true"
+                            aria-label="Scroll left"
+                    >
+                      <i class="fas fa-angle-left" aria-hidden="true"></i>
+                    </button>
+                    <ul class="pf-c-tabs__list">
+                      <div ng-show="tab == 'caseStatus'"><li class="pf-c-tabs__item pf-m-current" >
+                        <button class="pf-c-tabs__link" id="default-example-users-link">
+                          <span class="pf-c-tabs__item-text">Case Status</span>
+                        </button>
+                      </div>
+
+                      <div ng-show="tab != 'caseStatus'"><li>
+                        <button class="pf-c-tabs__link" id="default-example-users-link" ng-click="caseStatusCall()">
+                          <span class="pf-c-tabs__item-text">Case Status</span>
+                        </button>
+                      </li>
+                      </div>
+
+
+
+
+                      <div ng-show="tab == 'caseDataVal'"><li class="pf-c-tabs__item pf-m-current" >
+
+                        <button class="pf-c-tabs__link">
+                          <span class="pf-c-tabs__item-text">Case Data</span>
+                        </button>
+                      </li>
+                      </div>
+                      <div ng-show="tab != 'caseDataVal'"><li >
+
+                          <button class="pf-c-tabs__link" id="default-example-conainers-link" ng-click="caseDataCall();">
+                            <span class="pf-c-tabs__item-text">Case Data</span>
+                          </button>
+                        </li>
+                      </div>
+
+                      <div ng-show="tab == 'decisionNode'"><li class="pf-c-tabs__item pf-m-current" >
+
+                        <button class="pf-c-tabs__link" id="default-example-database-link">
+                          <span class="pf-c-tabs__item-text">Decision Nodes</span>
+                        </button>
+                      </li>
+                      </div>
+                      <div ng-show="tab != 'decisionNode'">
+                      <li class="pf-c-tabs__item">
+                        <button class="pf-c-tabs__link" id="default-example-databaslink" ng-click="decisionNodeCall()">
+                          <span class="pf-c-tabs__item-text">Decision Nodes</span>
+                        </button>
+                      </li>
+                      </div>
+
+
+                      <div ng-show="tab == 'docs'"><li class="pf-c-tabs__item pf-m-current" >
+
+                        <button class="pf-c-tabs__link" id="default-example-dtabase-link">
+                          <span class="pf-c-tabs__item-text">Documents</span>
+                        </button>
+                      </li>
+                      </div>
+                      <div ng-show="tab != 'docs'">
+                        <li class="pf-c-tabs__item">
+                          <button class="pf-c-tabs__link" id="default-example-databaslik" ng-click="docs()">
+                            <span class="pf-c-tabs__item-text">Documents</span>
+                          </button>
+                        </li>
+                      </div>
+
+                      <div ng-show="tab == 'comments'"><li class="pf-c-tabs__item pf-m-current" >
+
+                        <button class="pf-c-tabs__link" id="default-example-dtabase-link">
+                          <span class="pf-c-tabs__item-text">Comments</span>
+                        </button>
+                      </li>
+                      </div>
+                      <div ng-show="tab != 'comments'">
+                        <li class="pf-c-tabs__item">
+                          <button class="pf-c-tabs__link" id="default-example-databaslik" ng-click="comments()">
+                            <span class="pf-c-tabs__item-text">Comments</span>
+                          </button>
+                        </li>
+                      </div>
+
+                      <div ng-show="tab == 'tasks'"><li class="pf-c-tabs__item pf-m-current" >
+
+                        <button class="pf-c-tabs__link" id="default-example-database-link">
+                          <span class="pf-c-tabs__item-text">Tasks</span>
+                        </button>
+                      </li>
+                      </div>
+                      <div ng-show="tab != 'tasks'">
+                        <li class="pf-c-tabs__item">
+                          <button class="pf-c-tabs__link" id="default-example-databaslink" ng-click="taskCall()">
+                            <span class="pf-c-tabs__item-text">Tasks</span>
+                          </button>
+                        </li>
+                      </div>
+
+                    </ul>
+
+                    <button
+                            class="pf-c-tabs__scroll-button"
+                            disabled
+                            aria-hidden="true"
+                            aria-label="Scroll right"
+                    >
+                      <i class="fas fa-angle-right" aria-hidden="true"></i>
+                    </button>
+
+
+                  </div>
+                  <br/>
+
+                  <div width="54px" height="54px"  id="svgDiv" ng-show="tab == 'caseStatus'"></div>
+                  <div ng-show="tab == 'caseStatus'">
+                  <div style="margin-left:20px"> <h3>Dynamic Task Trigger</h3>
+                    <div class="pf-c-form__group-control">
+                      <select
+                              class="form-control"
+                              id="id_companyType"
+                              ng-model="steps" >
+                        >
+                        <option value="Loan Product"
+                        >Select</option
+                        >
+                        <option value="Due Diligence(KYC/AML/PEP)"
+                        >Due Diligence(KYC/AML/PEP)</option
+                        >
+                        <option value="Documentation"
+                        >Documentation</option
+                        >
+                        <option value="Legal Documentation Review"
+                        >Legal Documentation Review</option
+                        >
+
+                        <option value="Operations Manager Approval"
+                        >Operations Manager Approval</option
+                        >
+                        <option value="Onboarding Complete - Welcome Kit"
+                        >Onboarding Complete - Welcome Kit</option
+                        >
+
+                      </select>
+
+                      <button  id="dynamicButton" class="pf-c-button pf-m-primary" ng-click="trigger()">Submit</button>
+                      <button  id="closeButton" class="pf-c-button pf-m-primary" ng-click="closeCase()" >Close Case</button>
+                      <br/>
+                      {{closeCaseComment}}
+                    </div>
+
+                    </div>
+                  </div>
+                </div>
+
+
+
+
+                  <div ng-show="tab == 'caseDataVal'">
+                    <br/>
+                    <table
+                            class="pf-c-table pf-m-compact pf-m-grid-md"
+                            role="grid"
+                            aria-label="This is a compact table example"
+                            id="table-compact"
+                    >
+                      <thead>
+                      <tr role="row">
+
+                        <th role="columnheader" scope="col">Variable Name</th>
+                        <th role="columnheader" scope="col">Value</th>
+                        <th role="columnheader" scope="col">Last Modified</th>
+
+                      </tr>
+                      </thead>
+
+                      <tbody role="rowgroup">
+                      <tr role="row" ng-repeat="x in caseDataValue">
+                        <td role="cell">{{x.name}}</td>
+                        <td role="cell">{{x.value}}</td>
+                        <td role="cell">{{x.modifiedDate}}</td>
+                      </tr>
+                      </tbody>
+                    </table>
+
+                  </div>
+
+                  <div ng-show="tab == 'decisionNode'">
+                    <img src="DocumentCheckListDocs.dmn.svg"/>
+                    <table
+                            class="pf-c-table pf-m-compact pf-m-grid-md"
+                            role="grid"
+                            aria-label="This is a compact table example"
+                            id="table-compact"
+                    >
+                      <thead>
+                      <tr role="row">
+
+                        <th role="columnheader" scope="col">Variable Name</th>
+                        <th role="columnheader" scope="col">Value</th>
+                        <th role="columnheader" scope="col">Last Modified</th>
+
+                      </tr>
+                      </thead>
+
+                      <tbody role="rowgroup">
+                      <tr role="row" ng-repeat="x in decisionNodeData">
+                        <td role="cell">{{x.name}}</td>
+                        <td role="cell">{{x.value}}</td>
+                        <td role="cell">{{x.modifiedDate}}</td>
+                      </tr>
+                      </tbody>
+                    </table>
+
+                  </div>
+
+                  <div ng-show="tab == 'docs'">
+                    <div class="pf-c-select">
+
+                      <table ng-show="docsData !=null"
+                             class="pf-c-table pf-m-compact pf-m-grid-md"
+                             role="grid"
+                             aria-label="This is a compact table example"
+
+                      >
+                        <thead>
+                        <tr role="row">
+
+                          <th role="columnheader" scope="col">Document Id</th>
+                          <th role="columnheader" scope="col">Actions</th>
+
+                        </tr>
+                        </thead>
+
+                        <tbody role="rowgroup">
+                        <tr role="row" ng-repeat="x in docsData">
+                          <td role="cell">{{x}}</td>
+                          <td role="cell"><button  class="pf-c-button pf-m-primary" ng-click="getCaseFileDocs(x)">View</button></td>
+                        </tr>
+                        </tbody>
+                      </table>
+
+                      <div >
+                        <iframe src="{{content}}" frameborder="0" width="3000" ng-show="fileContentBool == true"
+                                scrolling="no" onload="this.style.height=(this.contentWindow.document.body.scrollHeight+2000)+'px';">
+                        </iframe>
+                      </div>
+
+
+                    </div>
+                  </div>
+
+                  <div ng-show="tab == 'comments'">
+                    <div class="pf-c-select">
+                      <div  style="margin-left:20px; margin-right:20px" class="pf-c-content">
+                        <br/>
+
+                        <div class="pf-c-input-group">
+  <textarea
+          class="pf-c-form-control"
+          name="textarea2"
+          id="textarea2"
+          aria-label="Textarea with button"
+          aria-describedby="textAreaButton2"
+          ng-model="commentValue"
+  ></textarea>
+                          <button
+                                  class="pf-c-button pf-m-control"
+                                  type="button"
+                                  id="textAreaButton2"
+                                  ng-click="addComment()"
+                          >Add</button>
+                        </div>
+                      </div>
+                      <br/>
+
+
+
+
+
+                      <table ng-show="commentData !=null"
+                             class="pf-c-table pf-m-compact pf-m-grid-md"
+                             role="grid"
+                             aria-label="This is a compact table example"
+
+                      >
+                        <thead>
+                        <tr role="row">
+
+                          <th role="columnheader" scope="col">Comment</th>
+                          <th role="columnheader" scope="col">Author</th>
+
+                        </tr>
+                        </thead>
+
+                        <tbody role="rowgroup">
+                        <tr role="row" ng-repeat="x in commentData">
+                          <td role="cell">{{x.comment}}</td>
+                          <td role="cell">{{x.author}}</td>
+                        </tr>
+                        </tbody>
+                      </table>
+
+
+
+
+                    </div>
+                  </div>
+
+                <div ng-show="tab == 'tasks'">
+                  <br/>
+                  <br/>
+                  <table
+                          class="pf-c-table pf-m-compact pf-m-grid-md"
+                          role="grid"
+                          aria-label="This is a compact table example"
+                          id="table-compact"
+                  >
+                    <thead>
+                    <tr role="row">
+
+                      <th role="columnheader" scope="col">Task Name</th>
+                      <th role="columnheader" scope="col">Task Status</th>
+                      <th role="columnheader" scope="col">Task Id</th>
+                      <th role="columnheader" scope="col">Task Actual Owner</th>
+                      <th role="columnheader" scope="col">Action</th>
+
+
+
+                    </tr>
+                    </thead>
+
+                    <tbody role="rowgroup">
+                    <tr role="row" ng-repeat="x in taskData">
+                      <td role="cell">{{x.taskName}}</td>
+                      <td role="cell">{{x.taskStatus}}</td>
+                      <td role="cell">{{x.taskId}}</td>
+                      <td role="cell">{{x.actualOwner}}</td>
+                      <td ng-show="x.taskStatus != 'Completed'"><button  class="pf-c-button pf-m-primary" ng-click="approveTask(x.taskId,true)">Approve</button>
+                        <button  class="pf-c-button pf-m-primary" ng-click="approveTask(x.taskId, false)">Reject</button>
+                      </td>
+                    </tr>
+                    </tbody>
+                  </table>
+                  <br/>
+                  <div  class="pf-c-table pf-m-compact pf-m-grid-md">
+
+
+
+
+                  </div>
+
+
+                </div>
+
+                </div>
+              </div>
+
+              <!-- Panel -->
+
+            </div>
+          </div>
+        </section>
+      </main>
+    </div>
+  </body>
+</html>
